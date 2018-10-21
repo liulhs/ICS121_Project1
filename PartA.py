@@ -1,7 +1,8 @@
-from pathlib import Path
-from _collections import defaultdict
+from pathlib import Path # Instead of opening and reading the file directly, I'm using Python Pathlib to do the work
+from _collections import defaultdict # Default dictionary comes in handy when appending and incrementing the result dictionary
 import string
 
+# This function asks the user to input a file name and check if the file is valid for processing
 def ask_and_check():
     while(True):
         file_name = input("Enter the file you want to process: ")
@@ -11,28 +12,37 @@ def ask_and_check():
         elif file_path.is_dir():
             print('This is a directory, not a file bud! Try again.')
         else:
-            return file_path
+            try:
+                return file_path.open() # might encounter read buffer problem ----------------------
+            except(Exception):
+                print('Something went wrong while opening the file, Sorry...please try again')
 
-def open_and_read(file_path:Path):
-    try:
-        file_open = file_path.open()
-    except(Exception):
-        print('Something went wrong while opening the file, Sorry...')
+# This function reads a opened file and finally output a dictionary whose key is every token and value is the frequency
+def open_and_read(file_open):
     result = defaultdict(int)
     for line in file_open:
-        for word in word_seperate(line):
+        for word in word_seperate(line): # helper function
             if word.isalpha():
                 result[word] += 1
     return result
-    
-        
 
+# This function sort the result to the required from and print it out 
+def sort_and_output(result: dict):
+    result = sorted(result.items(), key = lambda x: (-x[1],x[0]))
+    for i,j in result:
+        print('{}\t{}'.format(i,j))
+
+# A helper function that replace every punctuation with a white space. It also
+# Turn every character to lower case and split them by white space.
+# This function returns a list of every processed word or chunk of word.
 def word_seperate(target : str):
-    table = str.maketrans({key: None for key in string.punctuation})
-    return target.strip().translate(table).split()
+    table = str.maketrans({key: ' ' for key in target if not key.isalpha()})
+    return target.strip().lower().translate(table).split()
 
-file_path = ask_and_check()
-result = open_and_read(file_path)
-for i,j in result.items():
-    print('{}:{}'.format(i,j))
+
+# Execute main function
+if __name__ == '__main__':
+    file_open = ask_and_check()
+    result = open_and_read(file_open)
+    sort_and_output(result)
 
