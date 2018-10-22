@@ -2,10 +2,10 @@ from pathlib import Path # Instead of opening and reading the file directly, I'm
 from _collections import defaultdict # Default dictionary comes in handy when appending and incrementing the result dictionary
 import sys
 
-# This function asks the user to input a file name and check if the file is valid for processing
+# This function create a path object and check if the file is valid for processing
 def ask_and_check():
-    file_name = sys.argv[1].strip()
-    file_path = Path(file_name.strip())
+    file_name = sys.argv[1].strip() # Storing the passed command argument to a variable
+    file_path = Path(file_name.strip()) # Creating path a object
     if not file_path.exists():
         print('The file you want to access does not exist, try again!')
     elif file_path.is_dir():
@@ -19,7 +19,7 @@ def ask_and_check():
 # This function reads a opened file and finally output a dictionary whose key is every token and value is the frequency
 def open_and_read(file_open):
     result = defaultdict(int)
-    for line in file_open:
+    for line in file_open:               # <--------------From this part(double loop), it's easy to see that this function/program runs at O(n^2)
         for word in word_seperate(line): # helper function
             if word.isalpha():
                 result[word] += 1
