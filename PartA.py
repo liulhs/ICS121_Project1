@@ -1,21 +1,21 @@
 from pathlib import Path # Instead of opening and reading the file directly, I'm using Python Pathlib to do the work
 from _collections import defaultdict # Default dictionary comes in handy when appending and incrementing the result dictionary
 import string
+import sys
 
 # This function asks the user to input a file name and check if the file is valid for processing
 def ask_and_check():
-    while(True):
-        file_name = input("Enter the file you want to process: ")
-        file_path = Path(file_name.strip())
-        if not file_path.exists():
-            print('The file you want to access does not exist, try again!')
-        elif file_path.is_dir():
-            print('This is a directory, not a file bud! Try again.')
-        else:
-            try:
-                return file_path.open() # might encounter read buffer problem ----------------------
-            except(Exception):
-                print('Something went wrong while opening the file, Sorry...please try again')
+    file_name = sys.argv[1].strip()
+    file_path = Path(file_name.strip())
+    if not file_path.exists():
+        print('The file you want to access does not exist, try again!')
+    elif file_path.is_dir():
+        print('This is a directory, not a file bud! Try again.')
+    else:
+        try:
+            return file_path.open() # might encounter read buffer problem ----------------------
+        except(Exception):
+            print('Something went wrong while opening the file, Sorry...please try again')
 
 # This function reads a opened file and finally output a dictionary whose key is every token and value is the frequency
 def open_and_read(file_open):
@@ -42,7 +42,13 @@ def word_seperate(target : str):
 
 # Execute main function
 if __name__ == '__main__':
-    file_open = ask_and_check()
-    result = open_and_read(file_open)
-    sort_and_output(result)
-
+    try:
+        file_open = ask_and_check()
+        result = open_and_read(file_open)
+        sort_and_output(result)
+    except(IndexError):
+        print('Enter the name of the file you want to process as the second command argument please!')
+    except(Exception):
+        print('Something went wrong...? Please enter the right command argument please....')
+    
+    
