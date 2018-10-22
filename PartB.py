@@ -1,6 +1,4 @@
 from pathlib import Path # Instead of opening and reading the file directly, I'm using Python Pathlib to do the work
-from _collections import defaultdict # Default dictionary comes in handy when appending and incrementing the result dictionary
-import string
 import sys
 
 
